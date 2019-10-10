@@ -1,0 +1,11 @@
+
+find_program(CARROT_CC arm-none-eabi-gcc
+  PATHS $<CARROT_GCC_PATH>
+  PATH_SUFFIXES bin
+  NO_DEFAULT_PATH
+  )
+
+set(CMAKE_C_COMPILER ${CARROT_CC CACHE FILEPATH "C compiler")
+set(CMAKE_C_COMPILER_FORCED TRUE)
+
+
