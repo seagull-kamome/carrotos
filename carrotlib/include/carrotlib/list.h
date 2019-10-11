@@ -8,6 +8,10 @@
 #include <stdbool.h>
 #include "./compiler.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 typedef struct carrot_list_head {
   struct carrot_list_head *next;
   struct carrot_list_head *prev;
@@ -84,5 +88,8 @@ static __forceinline void carrot_list_rotate(carrot_list_head_t *it) {
 #define CARROT_LIST_FOR_EACH(typ, iter, head) \
     for (carrot_list_head_t iter = (head)->next; iter != (head); iter = iter->next)
 
+#if defined(__cplusplus)
+}
+#endif
 // vim: ts=8 tw=80 sw=2 expandtab cindent :
 
