@@ -26,9 +26,13 @@
  *  @brief
  */
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 
 
-
-
+#if defined(__cplusplus)
+}
+#endif
 // vim: ts=8 sw=2 cindent expandtab :
