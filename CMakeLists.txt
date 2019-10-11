@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.13)
-project(carrotos)
+include(./tools/cmake/toolchain/${CARROT_PORT_COMPILER}.cmake)
 
-set(CARROT_PORT_VENDOR "vendor" CACHE INTERNAL "Board vendor name")
-set(CARROT_PORT_BOARD "board" CACHE INTERNAL "Board name")
-set(CARROT_PORT_CONFIG "config" CACHE INTERNAL "Board config name")
+project(carrotos C)
+
+set(CARROT_PORT_VENDOR "vendor" CACHE STRING "Board vendor name")
+set(CARROT_PORT_BOARD "board" CACHE STRING "Board name")
+set(CARROT_PORT_CONFIG "config" CACHE STRING "Board config name")
 
 
 add_subdirectory(carrotlib)
