@@ -3,7 +3,6 @@
 #include <stddef.h>
 
 
-
 #define CARROT_COMPILER_GCC             (1)
 
 
@@ -12,13 +11,15 @@
 #  error "Give configuration value of CARROT_CONFIG_COMPILER"
 #elif  (CARROT_CONFIG_COMPILER == CARROT_COMPILER_GCC)
 
+#  include <sys/cdefs.h>
+
 #  define __forceinline  __attribute__((always_inline)) inline
-//#  define __nonnull(X)   __attribute__((nonnull (X)))
+//#  define __nonnull(X)   __attribute__((nonnull X))
 #  define __nodiscard    __attribute__((warn_unused_result))
 #  define __noreturn     __attribute__((noreturn))
-#  define __unused       __attribute__((unused))
-#  define __pure         __attribute__((pure))
-#  define __const        __attribute__((const))
+//#  define __unused       __attribute__((unused))
+//#  define __pure         __attribute__((pure))
+//#  define __const        __attribute__((const))
 #  define __constrant_p(X)  __builtin_constant_p(X)
 #  define __pack         __attribute__((packed))
 #  define __align(X)     __attribute__((aligned(X)))
@@ -28,7 +29,7 @@
 #  else
 #    define __fallthrough
 #  endif
-#  define __unreachable()  do { __builtin_unreachable(); } while (0)
+//#  define __unreachable()  do { __builtin_unreachable(); } while (0)
 
 #  define __max(a, b) \
   ({ __typeof__(a) _a = (a); \
