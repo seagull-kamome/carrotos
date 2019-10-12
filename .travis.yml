@@ -1,16 +1,15 @@
 #
 #
 #
+notifications:
+  email: false
+
 language: C
 matrix:
   fast_finish: true
   include:
-    - os: linux
-      sudo: false
-      env: TOOLCHAIN=gcc
-#   - os: linux
-#     sudo: false
-#     env: TOOLCHAIN=clang
+    - name: linux-arm-gcc
+      env: CARROT_PORT_COMPILER=arm-gcc
 
 addons: 
   apt:
@@ -29,7 +28,5 @@ script:
       && cmake -DCARROT_PORT_VENDOR=st -DCARROT_PORT_BOARD=nucleo-f103rb -DCARROT_PORT_COMPILER=arm-gcc -S . -B _dist 
       && make -C _dist
 
-notifications:
-  email: false
 
 
