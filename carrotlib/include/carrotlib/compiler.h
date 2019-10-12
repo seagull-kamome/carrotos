@@ -33,6 +33,24 @@
 #define CARROT_COMPILER_CLANG           (2)
 
 
+
+/* ************************************************************************ */
+/* Compiler independent shorthands. */
+
+#if defined(__cplusplus)
+#  define CARROT_BEGIN_EXTERN_C  extern "C" {
+#  define CARROT_END_EXTERN_C    }
+#  define __extern_C        extern "C"
+#else
+#  define CARROT_BEGIN_EXTERN_C
+#  define CARROT_END_EXTERN_C
+#  define __extern_C
+#endif
+
+
+/* ************************************************************************ */
+/* Compiler dependent shorthands. */
+
 #if !defined(CARROT_CONFIG_COMPILER)
 #  error "Give configuration value of CARROT_CONFIG_COMPILER"
 #elif  (CARROT_CONFIG_COMPILER == CARROT_COMPILER_GCC)
