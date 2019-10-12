@@ -7,7 +7,8 @@ add_library(kernel
 target_include_directories(kernel PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(kernel PRIVATE
   carrot_compiler
-  carrotlib carrotlib
-  kernel_board_port)
+  carrotlib
+  kernel_board_port
+  carrot_arch)
 
 

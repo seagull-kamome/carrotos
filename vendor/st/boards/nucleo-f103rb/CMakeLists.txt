@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.12)
 project(port_st_nucleo-f03rb C)
 
+add_subdirectory(../../../../arch/cortex-m3 arch)
+add_library(carrot_arch ALIAS carrot_arch_cortex-m3)
 
 ##############################################################################
 
