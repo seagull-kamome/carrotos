@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.12)
 include(./tools/cmake/toolchain/${CARROT_PORT_COMPILER}.cmake)
 
 project(carrotos C)
