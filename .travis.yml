@@ -32,6 +32,6 @@ before_script:
 
 script:
   - mkdir -p _dist/${TOOLCHAIN}
-  - cd _dist/${TOOLCHAIN} && cmake -DCARROT_PORT_VENDOR=st -DCARROT_PORT_BOARD=nucleo-f103rb -DCARROT_PORT_COMPILER=${TOOLCHAIN} ../.. && make DVERBOSE=1
+  - cd _dist/${TOOLCHAIN} && cmake -DCARROT_PORT_VENDOR=st -DCARROT_PORT_BOARD=nucleo-f103rb -DCARROT_PORT_COMPILER=${TOOLCHAIN} ../.. && make VERBOSE=1
 
 
