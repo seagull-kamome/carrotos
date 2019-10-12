@@ -42,9 +42,11 @@
 /*
  * Dummy implementation for single processor system.
  */
-#  if !defined(CARROT_CONFIG_SMP) || CARROT_CONFIG_SMP
+#  if defined(CARROT_CONFIG_SMP) && (CARROT_CONFIG_SMP)
 #    error "CARROT_CONFIG_SMP needs valid spinlock."
 #  endif
+
+#include "./interrupt.h"
 
 typedef struct { } __unused carrot_spinlock_t;
 

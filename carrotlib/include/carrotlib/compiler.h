@@ -58,6 +58,7 @@
 #  include <sys/cdefs.h>
 
 #  define __forceinline  __attribute__((always_inline)) inline
+#  define __naked        __attribute__((naked))
 //#  define __nonnull(X)   __attribute__((nonnull X))
 #  define __nodiscard    __attribute__((warn_unused_result))
 #  define __noreturn     __attribute__((noreturn))

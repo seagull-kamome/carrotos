@@ -51,17 +51,17 @@ static __forceinline void carrot_list_add_tail(
     carrot_list_head_t *whence, carrot_list_head_t *it) {
   carrot_list_insert(whence->prev, whence, it); }
 
-static __forceinline void carrot_list_delete(carrot_list_head_t *it) {
+static __forceinline void carrot_list_remove(carrot_list_head_t *it) {
   carrot_list_connect(it->prev, it->next); }
-static __forceinline void carrot_list_delete_and_init(carrot_list_head_t *it) {
-  carrot_list_delete(it); carrot_list_init(it); }
+static __forceinline void carrot_list_remove_and_init(carrot_list_head_t *it) {
+  carrot_list_remove(it); carrot_list_init(it); }
 
 static __forceinline void carrot_list_move(
     carrot_list_head_t* whence, carrot_list_head_t *it) {
-  carrot_list_delete(it); carrot_list_add(whence, it); }
+  carrot_list_remove(it); carrot_list_add(whence, it); }
 static __forceinline void carrot_list_move_to_tail(
     carrot_list_head_t* head, carrot_list_head_t *it) {
-  carrot_list_delete(it); carrot_list_add_tail(head, it); }
+  carrot_list_remove(it); carrot_list_add_tail(head, it); }
 
 
 __nodiscard
