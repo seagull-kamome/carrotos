@@ -30,43 +30,48 @@
 
 #define CARROT_ATOMIC_IMPL_NONE         (0 /* Dummy impl */)
 #define CARROT_ATOMIC_IMPL_STD          (1 /* Use stdatomic */)
-#define CARROT_ATOMIC_IMPL_ARCH         (2 /* Use carrotlib/arch */)
-#define CARROT_ATOMIC_IMPL_MCU          (3 /* Use carrotlib/mcu */)
-#define CARROT_ATOMIC_IMPL_BOARD        (4 /* Use carrotlib/board */)
-#define CARROT_ATOMIC_IMPL_CONFIG       (5 /* Use carrotlib/port */)
+#define CARROT_ATOMIC_IMPL_ARCH         (100 /* Use carrotlib/arch */)
+#define CARROT_ATOMIC_IMPL_MCU          (101 /* Use carrotlib/mcu */)
+#define CARROT_ATOMIC_IMPL_BOARD        (102 /* Use carrotlib/board */)
+#define CARROT_ATOMIC_IMPL_CONFIG       (103 /* Use carrotlib/port */)
 
 
 #include <carrotlib/config.h>
 
 #if !defined(CARROT_CONFIG_ATOMIC_IMPL)
-#  error "Need configure CARROT_CONFIG_ATOMIC_IMPL"
+#  error "CARROT_CONFIG_ATOMIC_IMPL not defined"
+/* ************************************************************************ */
 #elif (CARROT_CONFIG_ATOMIC_IMPL == CARROT_ATOMIC_IMPL_NONE)
 
 #  if defined(CARROT_CONFIG_SMP) && CARROT_CONFIG_SMP
-#    warning "configured CARROT_ATOMIC_IMPL_NONE but CARROT_CONFIG_SMP,"
+#    warning "using CARROT_ATOMIC_IMPL_NONE but no CARROT_CONFIG_SMP defined"
 #  else
 #    define __atomic
-#    define CARROT_FENCE()        do { } while (0)
-#    define CARROT_READ_ONCE(ptr) (*(ptr))
-#    define CARROT_WRITE_ONCE(ptr, val) do { *(ptr) = (val); } while (0)
-#    define CARROT_COMPARE_EXCHANGE(object, expected, desired) ( \
+#    define carrot_atomic_fence()        do { } while (0)
+#    define carrot_atomic_read(ptr) (*(ptr))
+#    define carrot_atomic_write(ptr, val) do { *(ptr) = (val); } while (0)
+
+#    define carrot_atomic_cas(object, expected, desired) ( \
     (*(object) == *(expected)) \
-      ? ((*(object) = desired), true) \
+      ? ((*(object) = (desired)), true) \
       : ((*(expected) = *(object)), false) )
 #  endif
 
 
+/* ************************************************************************ */
 #elif (CARROT_CONFIG_ATOMIC_IMPL == CARROT_ATOMIC_IMPL_GENERIC)
 
 #  include <stdatomic.h>
 
 #  define __atomic
-#  define CARROT_FENCE()                do { atomic_thread_fence(memory_order_seq_cst); } while (0)
-#  define CARROT_READ_ONCE(ptr)         do { atomic_load((ptr), (val)); } while (0)
-#  define CARROT_WRITE_ONCE(ptr, val)   do { atomic_store((ptr), (val)); } while (0)
-#  define CARROT_COMPARE_EXCHANGE(object, expected, desired) \
-  atomic_compare_exchange_strong((object), (expected(, (desired(, memory_order_seq_cst))
+#  define carrot_atomic_fence() do { atomic_thread_fence(memory_order_seq_cst); } while (0)
+#  define carrot_atomic_read(ptr) do { atomic_load((ptr), (val)); } while (0)
+#  define carrot_atomic_write(ptr, val)  do { atomic_store((ptr), (val)); } while (0)
 
+#  define carrot_atomic_cas(object, expected, desired) \
+  atomic_compare_exchange_strong((object), (expected), (desired(, memory_order_seq_cst))
+
+/* ************************************************************************ */
 #elif (CARROT_CONFIG_ATOMIC_IMPL == CARROT_ATOMIC_IMPL_ARCH)
 #  include <carrotlib/arch/atomic.h>
 #elif (CARROT_CONFIG_ATOMIC_IMPL == CARROT_ATOMIC_IMPL_MCU)
