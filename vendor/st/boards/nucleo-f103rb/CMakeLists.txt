@@ -6,7 +6,7 @@ project(port_st_nucleo-f03rb C)
 
 add_library(carrot_compiler_port_gcc INTERFACE)
 target_compile_options(carrot_compiler_port_gcc INTERFACE
-  -mcpu=cortex-m3 -mthumb)
+  -march=armv7-m -mtune=cortex-m3 -mthumb)
 
 
 

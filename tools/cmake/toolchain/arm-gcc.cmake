@@ -2,7 +2,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 set(CMAKE_CROSSCOMPILING TRUE)
 
-# set(CMAKE_C_FLAGS "-mcpu=cortex-m3 -mthumb")
+# set(CMAKE_C_FLAGS "-march=cortex-m3 -mthumb")
 
 find_program(CARROT_CC arm-none-eabi-gcc
   PATHS $<CARROT_GCC_PATH>

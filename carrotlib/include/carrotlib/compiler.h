@@ -93,7 +93,5 @@
 #  error "Unknown compiler"
 #endif
 
-#endif
-
 // vim: ts=8 sw=2 cindent expandtab :
 
