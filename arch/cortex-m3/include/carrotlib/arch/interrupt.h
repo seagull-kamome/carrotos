@@ -26,15 +26,19 @@
  *  @brief Enable/Disable interrupts of cortex-m3.
  */
 #pragma once
+#include <stdint.h>
 #include <carrotlib/compiler.h>
 
 CARROT_BEGIN_EXTERN_C // {
+
+/* ************************************************************************ */
 
 static __forceinline void carrot_arch_enable_irq(void) {
   asm volatile ("cpsid if"); }
 static __forceinline void carrot_arch_disable_irq(void) {
   asm volatile ("cpsie if"); }
-static __forceinline int carrot_arch_save_irq(void) {
+
+__nodiscard static __forceinline int carrot_arch_save_irq(void) {
   int x;
   asm volatile ("mrs %0, cpsr; cpsid if; and %0, %0, 0xc0;"
       : "=r"(x) : : "memory");
@@ -44,6 +48,23 @@ static __forceinline void carrot_arch_restore_irq(int flags) {
   int tmp;
   asm volatile ("mrs %0, cpsr; blc %0, %0, %1; msr cpsr_c, %0"
       : "=r"(tmp) : "r" (flags) : "memory"); }
+
+
+
+/* ************************************************************************ */
+/*
+ * Cortex-M3 dependent features.
+ */
+
+__nodiscard static __forceinline uint32_t carrot_armcm3_get_basepri(void) {
+  uint32_t x;
+  asm volatile("mrs %0, basepri" : "=r"(x));
+  return x;
+}
+
+static __forceinline void carrot_armcm3_set_basepri(uint32_t x) {
+  asm volatile("msr basepri, %0" : : "r" (x));
+}
 
 CARROT_END_EXTERN_C // }
 
