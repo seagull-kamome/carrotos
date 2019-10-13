@@ -29,7 +29,7 @@ target_compile_options(carrot_compiler INTERFACE
   $<$<CONFIG:Release>:-O3>
   $<$<CONFIG:Debug>:-O0 -g>
   $<$<CONFIG:RelWithDebugInfo>:-O3 -g>
-  -std=gnu11 -Wall -fdata-sections -ffunction-sections -spec=none.spec)
+  -std=gnu11 -Wall -fdata-sections -ffunction-sections -specs=nosys.specs)
 target_compile_definitions(carrot_compiler INTERFACE
   CARROT_CONFIG_COMPILER=CARROT_COMPILER_GCC
   $<$<NOT:$<CONFIG:Debug>>:NODEBUG>)
