@@ -3,6 +3,7 @@ project(carrotlib C)
 
 add_library(carrotlib
   src/time.c
+  src/bitops.c
   )
 target_include_directories(carrotlib
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
