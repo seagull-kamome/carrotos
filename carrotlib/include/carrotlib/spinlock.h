@@ -78,20 +78,8 @@ static __forceinline void carrot_spinlock_init(carrot_spinlock_t *lck) {
   *lck->do_not_touch = 0;
 }
 
-
-__nodiscard __nonnull((1))
-static __forceinline int carrot_spinlock_save_irq(carrot_spinlock_t *lck) {
-  int flags = carrot_save_irq();
-
-  int expected = 0;
-  while (! carrot_atomic_cas(&lck->do_not_touch, &expected, 1)) {
-    carrot_restore_irq(flags);
-    expected = 0;
-    flags = carrot_save_irq();
-  }
-
-  return flags;
-}
+__nodiscard __nonnull((1)) int carrot_spinlock_save_irq(
+    carrot_spinlock_t *lck);
 
 
 __nonnull((2))
