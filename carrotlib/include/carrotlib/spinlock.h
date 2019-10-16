@@ -47,8 +47,11 @@
 #  endif
 
 #include "./interrupt.h"
+#include <assert.h>
 
 typedef struct { } __unused carrot_spinlock_t;
+
+static_assert(sizeof(carrot_spinlock_t) == 0, "carrot_spinlock_t must be zero.");
 
 #define CARROT_SPINLOCK_INITIALIZER     {}
 
