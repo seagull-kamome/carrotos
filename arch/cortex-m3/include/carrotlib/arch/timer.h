@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief Interface to HW timer for ARMCM3.
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -20,19 +24,28 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- */
-
-/** @file
- *  @brief Configuration file of carrotlib for st.nucleo-f103rb.
+ *
+ * @section Related configuration vars.
+ *
+ *   - CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ
+ *   - CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC
  */
 #pragma once
+#include <stdbool.h>
+#include <carrotlib/config.h>
+#include <carrotlib/compiler.h>
+#include <carrotlib/time.h>
 
-//#define CARROT_CONFIG_SMP             (0)
-#define CARROT_CONFIG_BITOPS_IMPL       CARROT_BITOPS_IMPL_BUILTIN
-#define CARROT_CONFIG_ATOMIC_IMPL       CARROT_ATOMIC_IMPL_NONE
-#define CARROT_CONFIG_SPINLOCK_IMPL     CARROT_SPINLOCK_IMPL_NONE
-#define CARROT_CONFIG_IRQ_IMPL          CARROT_IRQ_IMPL_ARCH
-#define CARROT_CONFIG_TIMER_IMPL        CARROT_TIMER_IMPL_ARCH
+#define CARROT_ARMCM3_SYSTICK_CLKSRC_SYS   (0)
+#define CARROT_ARMCM3_SYSTICK_CLKSRC_EXT   (1)
+
+void carrot_arch_clock_start_hw_timer(void);
+bool carrot_arch_clock_get_hw_elapsed(struct carrot_timespec *ts);
+void carrot_arch_clock_set_hw_alarm(unsigned int delay_usec);
+
+void carrot_armcm3_systick_isr(void);
+
+#define CARROT_ARCH_CLOCK_HW_HAS_ALARM          (1)
 
 
-// vim: ts=8 sw=2 cindent expandtab :
+// vim: colorcolumn=80 ts=8 sw=2 cindent expandtab :

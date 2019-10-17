@@ -8,7 +8,7 @@ add_library(carrot_arch ALIAS carrot_arch_cortex-m3)
 
 add_library(carrot_compiler_port_gcc INTERFACE)
 target_compile_options(carrot_compiler_port_gcc INTERFACE
-  -march=armv7-m -mtune=cortex-m3 -mthumb)
+  -mcpu=cortex-m3 -mthumb)
 
 
 

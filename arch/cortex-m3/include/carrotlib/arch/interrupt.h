@@ -40,14 +40,13 @@ static __forceinline void carrot_arch_disable_irq(void) {
 
 __nodiscard static __forceinline int carrot_arch_save_irq(void) {
   int x;
-  asm volatile ("mrs %0, cpsr; cpsid if; and %0, %0, 0xc0;"
+  asm volatile ("mrs %0, primask; cpsid if;"
       : "=r"(x) : : "memory");
   return x; }
 
 static __forceinline void carrot_arch_restore_irq(int flags) {
-  int tmp;
-  asm volatile ("mrs %0, cpsr; blc %0, %0, %1; msr cpsr_c, %0"
-      : "=r"(tmp) : "r" (flags) : "memory"); }
+  asm volatile ("msr primask, %0;"
+      : : "r" (flags) : "memory"); }
 
 
 

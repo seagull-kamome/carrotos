@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief Interface to timespec.
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -20,11 +24,13 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * @section Related configuration vars.
+ *
+ *   - CARROT_CONFIG_LARGE_TIME_T
+ *
  */
 
-/** @file
- *  @brief Interface to time.
- */
 
 #pragma once
 #include <stdint.h>
