@@ -68,13 +68,13 @@ __nonnull((1)) void carrot_clock_get_system_time(struct carrot_timespec *ts);
 
 
 /** Notice a hardware clock period exeeded.
- * @param usec   Passed time from last period, in usecs.
+ * @param ts       Elapsed time from last period.
  *
  * You can call this from any ISR.
  *
  *   - No reentrant.
  */
-void carot_clock_give_tick(unsigned int usecs);
+void carot_clock_give_tick(struct timespec const* ts);
 
 
 /* ************************************************************************ */

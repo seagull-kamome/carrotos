@@ -135,18 +135,15 @@ static void update_hw_alarm(
 
 
 
-void carot_clock_give_tick(unsigned int usecs) {
+void carot_clock_give_tick(struct carrot_timespec const* ts) {
   int flags = carrot_spinlock_save_irq(&cnxt.lck);
 
   // Update current time.
-  {
-    struct carrot_timespec tmp = {
-      .tv_sec = cnxt.now.tv_sec + usecs / 1000l,
-      .tv_nsec = cnxt.now.tv_nsec + (usecs % 1000l) * 1000l };
-    cnxt.now.tv_sec = tmp.tv_sec + tmp.tv_nsec / CARROT_NSECS_IN_SEC;
-    cnxt.now.tv_nsec = tmp.tv_nsec % CARROT_NSECS_IN_SEC;
-  }
-  struct carrot_timespec const now = cnxt.now;
+  struct carrot_timespec now = cnxt.now;
+  now.tv_nsec = cnxt.now.tv_nsec + ts->tv_nsec;
+  now.tv_sec = cnxt.now.tv_sec + ts->tv_sec + now.tv_nsec / CARROT_NSECS_IN_SRC;
+  now.tv.nsec %= CARROT_NSECS_IN_SEC;
+  cnxt.now = now;
   cnxt.last_now = now;
 
   // Callback exhausted timers.

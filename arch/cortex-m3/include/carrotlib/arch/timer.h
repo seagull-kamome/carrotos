@@ -36,12 +36,12 @@
 #include <carrotlib/compiler.h>
 #include <carrotlib/time.h>
 
-#define CARROT_ARMCM3_SYSTICK_CLKSRC_SYS   (0)
-#define CARROT_ARMCM3_SYSTICK_CLKSRC_EXT   (1)
+#define CARROT_ARMCM3_SYSTICK_CLKSRC_SYS   (1)
+#define CARROT_ARMCM3_SYSTICK_CLKSRC_EXT   (0)
 
 void carrot_arch_clock_start_hw_timer(void);
 bool carrot_arch_clock_get_hw_elapsed(struct carrot_timespec *ts);
-void carrot_arch_clock_set_hw_alarm(unsigned int delay_usec);
+void carrot_arch_clock_set_hw_alarm(struct carrot_timespec* dlyts);
 
 void carrot_armcm3_systick_isr(void);
 
