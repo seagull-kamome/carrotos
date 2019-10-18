@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief CPU controlling primitives.
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -20,10 +24,7 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-
-/** @file
- *  @brief
+ *
  */
 #pragma once
 #include <carrotlib/compiler.h>
@@ -38,22 +39,22 @@
 #  error "no defined CARROT_CONFIG_CPU_IMPL."
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_ARCH)
 #  include <carrot/arch/cpu.h>
-#  define carrot_relax_cpu      carrot_arch_relax_cpu
+#  define carrot_cpu_relax      carrot_arch_cpu_relax
 #  define carrot_cpu_nop        carrot_arch_cpu_nop
 #  define carrot_current_cpu_id carrot_arch_current_cpu_id
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_MCU)
 #  include <carrot/mcu/cpu.h>
-#  define carrot_relax_cpu      carrot_mcu_relax_cpu
+#  define carrot_cpu_relax      carrot_mcu_cpu_relax
 #  define carrot_cpu_nop        carrot_mcu_cpu_nop
 #  define carrot_current_cpu_id carrot_mcu_current_cpu_id
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_BOARD)
 #  include <carrot/board/cpu.h>
-#  define carrot_relax_cpu      carrot_board_relax_cpu
+#  define carrot_cpu_relax      carrot_board_cpu_relax
 #  define carrot_cpu_nop        carrot_board_cpu_nop
 #  define carrot_current_cpu_id carrot_board_current_cpu_id
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_CONFIG)
 #  include <carrot/config/cpu.h>
-#  define carrot_relax_cpu      carrot_config_relax_cpu
+#  define carrot_cpu_relax      carrot_config_cpu_relax
 #  define carrot_cpu_nop        carrot_config_cpu_nop
 #  define carrot_current_cpu_id carrot_config_current_cpu_id
 #endif

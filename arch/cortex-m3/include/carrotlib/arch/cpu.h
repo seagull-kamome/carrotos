@@ -30,7 +30,7 @@
 
 CARROT_BEGIN_EXTERN_C // {
 
-static __forceinline void carrot_arch_relax_cpu(void) {
+static __forceinline void carrot_arch_cpu_relax(void) {
   asm volatile ("wfi;"); }
 static __forceinline void carrot_arch_cpu_nop(void) { asm volatile("nop;"); }
 static __forceinline __pure void carrot_arch_current_cpu_id(void) { return 0; }
