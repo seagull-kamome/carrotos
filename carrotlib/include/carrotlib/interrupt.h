@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief Enable/Disable interrupts.
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -20,10 +24,6 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- */
-
-/** @file
- *  @brief Enable/Disable interrupts.
  */
 #pragma once
 
