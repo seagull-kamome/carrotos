@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief Interface of atomic operation
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -20,13 +24,12 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-
-/** @file
- *  @brief Interface of atomic operation
+ *
+ * @section Related configuration variables.
+ *
+ *   - CARROT_CONFIG_ATOMIC_IMPL
  */
 #pragma once
-
 
 #define CARROT_ATOMIC_IMPL_NONE         (0 /* Dummy impl */)
 #define CARROT_ATOMIC_IMPL_STD          (1 /* Use stdatomic */)

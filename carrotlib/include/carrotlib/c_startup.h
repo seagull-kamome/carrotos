@@ -1,4 +1,7 @@
-/*
+/**
+ * @file
+ * @brief Interface of real-time clock
+ * @section LICENSE
  *
  * Copyright (c) 2019 Hattori, Hiroki
  *
@@ -21,9 +24,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/** @file
- *  @brief Interface of real-time clock
- */
 #pragma once
 #include <stdint.h>
 #include <carrotlib/compiler.h>

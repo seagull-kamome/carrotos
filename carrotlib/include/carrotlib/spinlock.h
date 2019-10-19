@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief Interface/Implements to spinlock.
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -21,10 +25,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-
-/** @file
- *  @brief Interface/Implements to spinlock.
- */
+#pragma once
 #include <carrotlib/config.h>
 
 #define CARROT_SPINLOCK_IMPL_NONE        (0)

@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief Bit operations.
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -21,10 +25,8 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+#include <carrotlib/config.h>
 
-/** @file
- *  @brief Bit operations.
- */
 #if defined(CARROT_CONFIG_BITOPS_IMPL) && \
   (CARROT_CONFIG_BITOPS_IMPL == CARROT_BITOPS_IMPL_GENERIC)
 

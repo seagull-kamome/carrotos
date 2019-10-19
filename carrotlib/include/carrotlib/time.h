@@ -30,8 +30,6 @@
  *   - CARROT_CONFIG_LARGE_TIME_T
  *
  */
-
-
 #pragma once
 #include <stdint.h>
 #include <stdbool.h>
