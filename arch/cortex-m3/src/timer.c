@@ -50,6 +50,44 @@
 
 /* ************************************************************************ */
 
+struct tick2ts {
+  struct carrot_timespec ts;
+  uint32_t remains;
+};
+
+static inline __pure struct tick2ts tick_to_ts(uint32_t n) {
+  struct tick2ts tt;
+  tt.ts.tv_sec = n / CARROT_ARMCM3_SYSTICK_INFREQ_HZ;
+  n %= CARROT_ARMCM3_SYSTICK_INFREQ_HZ;
+
+  if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 1000000000ul == 0) {
+    tt.ts.tv_nsec = n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000000ul);
+    n %= CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC / 1000000000ul;
+  } else if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 1000000ul == 0) {
+    tt.ts.tv_nsec = n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul) * 1000ul;
+    n = n % (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul) * 1000ul
+      + cnxt.remains;
+    tt.ts.tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul);
+    n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000ul;
+  } else {
+    assert(CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 10 == 0);
+    tt.ts.tv_nsec = 0;
+    for (unsigned int i = 0; i < 8; ++i) {
+      tt.ts.tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10);
+      tt.ts.tv_nsec *= 10;
+      n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10;
+    }
+    n += cnxt.remains;
+    tt.ts.tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10);
+    n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10;
+  }
+  tt.remains = n;
+  return tt; // I believe in power of pure! please!! I beg you optimizer!
+}
+
+
+/* ************************************************************************ */
+
 static struct {
   bool elapsed;
   uint32_t last_loadval;
@@ -67,35 +105,6 @@ void carrot_arch_clock_start_hw_timer(void) {
 }
 
 
-static uint32_t calc_ts(struct carrot_timespec *ts, uint32_t n) {
-  ts->tv_sec = n / CARROT_ARMCM3_SYSTICK_INFREQ_HZ;
-  n %= CARROT_ARMCM3_SYSTICK_INFREQ_HZ;
-
-  if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 1000000000ul == 0) {
-    ts->tv_nsec = n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000000ul);
-    n %= CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC / 1000000000ul;
-  } else if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 1000000ul == 0) {
-    ts->tv_nsec = n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul) * 1000ul;
-    n = n % (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul) * 1000ul
-      + cnxt.remains;
-    ts->tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul);
-    n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000ul;
-  } else {
-    assert(CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 10 == 0);
-    ts->tv_nsec = 0;
-    for (unsigned int i = 0; i < 8; ++i) {
-      ts->tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10);
-      ts->tv_nsec *= 10;
-      n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10;
-    }
-    n += cnxt.remains;
-    ts->tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10);
-    n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10;
-  }
-  return n;
-}
-
-
 bool carrot_arch_clock_get_hw_elapsed(struct carrot_timespec *ts) {
   // Assuming that interrupt are disabled.
   uint32_t n = carrot_armcm3_systick_current_value();
@@ -104,28 +113,30 @@ bool carrot_arch_clock_get_hw_elapsed(struct carrot_timespec *ts) {
     return false; // it should retry.
   }
   assert(n <= cnxt.last_loadval);
-  calc_ts(n, ts);
+  *ts = tick_to_ts(n).ts;
   return true;
 }
 
 
-void carrot_arch_clock_set_hw_alarm(struct timespec* dlyts) {
-  if (cnxt.elapsed) return;
+void carrot_arch_clock_set_hw_alarm(unsigned int delay_us) {
+  uint64_t x = (delay_us == (unsigned int)-1)
+    ? (uint64_t)CARROT_ARMCM3_SYSTICK_MAX_RELOADVAL + 1
+    : (uint64_t)CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ * delay_us
+                    / 1000000ul;
 
   int flags = carrot_save_irq();
   CARROT_ARMCM3_SYSTICK->csr = CARROT_ARMCM3_SYSTICK_CLKSRC? 0x04 : 0ul; // disable in temporary.
-  if (CARROT_ARMCM3_SYSTICK->csr & (1ul << 16)) {
-    CARRT_ARMCM3_SYSTICK->csr = CARROT_ARMCM3_SYSTICL_CLKSRC? 0x05 : 0x01; // start again
+  if (cnxt.elapsed || CARROT_ARMCM3_SYSTICK->csr & (1ul << 16)) {
+    CARRT_ARMCM3_SYSTICK->csr = CARROT_ARMCM3_SYSTICK_CLKSRC? 0x05 : 0x01; // start again
     cnxt.elapsed = true;
-    return ;
+    carrot_restore_irq(flags);
+    return;
   }
+  x -= cnxt.last_loadval - carrot_armcm3_systick_current_value();
+  ARMCM3_SYSTICK->cvr = (uint32_t)min(x, (uint64_t)CARROT_ARMCM3_SYSTICK_MAX_RELOADVAL);
 
-  uint32_t n = carrot_armcm3_systick_current_value();
-  struct carrot_timespec ts;
-  assert(n <= cnxt.last_loadval);
-  calc_ts(cnxt.last_loadval - n, &ts);
-
-
+  CARRT_ARMCM3_SYSTICK->csr = CARROT_ARMCM3_SYSTICK_CLKSRC? 0x05 : 0x01; // start again
+  carrot_restore_irq(flags);
 }
 
 

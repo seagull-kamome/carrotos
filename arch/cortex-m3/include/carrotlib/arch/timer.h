@@ -27,8 +27,8 @@
  *
  * @section Related configuration vars.
  *
- *   - CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ
- *   - CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC
+ *   - CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ  (must be pure)
+ *   - CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC     (must be pure)
  */
 #pragma once
 #include <stdbool.h>
@@ -41,7 +41,7 @@
 
 void carrot_arch_clock_start_hw_timer(void);
 bool carrot_arch_clock_get_hw_elapsed(struct carrot_timespec *ts);
-void carrot_arch_clock_set_hw_alarm(struct carrot_timespec* dlyts);
+void carrot_arch_clock_set_hw_alarm(unsigned int delay_us);
 
 void carrot_armcm3_systick_isr(void);
 
