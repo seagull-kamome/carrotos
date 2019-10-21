@@ -48,6 +48,7 @@
 #endif
 
 
+
 /* ************************************************************************ */
 /* Compiler dependent shorthands. */
 
@@ -76,14 +77,20 @@
 #  endif
 //#  define __unreachable()  do { __builtin_unreachable(); } while (0)
 
+#if defined(S_SPRINT_S)
+#  undef __asm__
+#  define __asm__(X)   do { } while(0)
+#endif
+
+
 #  define __max(a, b) \
   ({ __typeof__(a) _a = (a); \
      __typeof__(b) _b = (b); \
-     _a > _b? _a : _b })
+     _a > _b? _a : _b; })
  #  define __min(a, b) \
   ({ __typeof__(a) _a = (a); \
      __typeof__(b) _b = (b); \
-     _a < _b? _a : _b })
+     _a < _b? _a : _b; })
 
 //#define offsetof(typ, mbr) __builtin_offsetof(typ, mbr)
 #define container_of(ptr, typ, mbr) \

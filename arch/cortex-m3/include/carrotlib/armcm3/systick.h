@@ -36,7 +36,7 @@ struct carrot_armcm3_systick {
   uint32_t volatile const calib;
 };
 
-#define CARROT_ARMCM3_SYSTICK         ((struct armcm3_systick*)0xe000e010ul)
+#define CARROT_ARMCM3_SYSTICK   ((struct carrot_armcm3_systick*)0xe000e010ul)
 
 #define CARROT_ARMCM3_SYSTICK_MAX_RELOADVAL  (0x00fffffful)
 
@@ -45,21 +45,21 @@ __nodiscard static __forceinline bool carrot_armcm3_systick_asserted(void) {
   return (CARROT_ARMCM3_SYSTICK->csr & (1ul << 16))? true : false;
 }
 static __forceinline void carrot_armcm3_systick_enable(void) {
-  ARMCM3_SYSTICK->csr |= 1ul; }
+  CARROT_ARMCM3_SYSTICK->csr |= 1ul; }
 static __forceinline void carrot_armcm3_systick_disable(void) {
-  ARMCM3_SYSTICK->csr &= ~1ul; }
+  CARROT_ARMCM3_SYSTICK->csr &= ~1ul; }
 
 __nodiscard static __forceinline uint32_t carrot_armcm3_get_systick_reload_counter(void) {
-  return ARMCM3_SYSTICK->rvr & 0x00fffffful; }
+  return CARROT_ARMCM3_SYSTICK->rvr & 0x00fffffful; }
 static __forceinline void carrot_armcm3_systick_set_reload_counter(
     uint32_t reload) {
-  ARMCM3_SYSTICK->rvr = (ARMCM3_SYSTICK->rvr & 0xff000000ul) + reload; }
+  CARROT_ARMCM3_SYSTICK->rvr = (CARROT_ARMCM3_SYSTICK->rvr & 0xff000000ul) + reload; }
 
 
 static inline uint32_t carrot_armcm3_systick_current_value(void) {
-  uint32_t x = ARMCM3_SYSTICK->cvr;
+  uint32_t x = CARROT_ARMCM3_SYSTICK->cvr;
   uint32_t y;
-  while ((y = ARMCM3_SYSTICK->cvr) != x) x = y;
+  while ((y = CARROT_ARMCM3_SYSTICK->cvr) != x) x = y;
   return y & 0x00fffffful;;
 }
 
@@ -73,7 +73,7 @@ static __forceinline void carrot_armcm3_systick_configure(
   carrot_armcm3_systick_disable();
   carrot_armcm3_systick_set_reload_counter(reload);
   CARROT_ARMCM3_SYSTICK->csr
-    = (ARMCM3_SYSTICK->csr & (0xfffffff8))
+    = (CARROT_ARMCM3_SYSTICK->csr & (0xfffffff8))
     | (use_external_clock? (1ul << 2) : 0)
     | (use_interrupt? (1ul << 1) : 0)
     | (enabled? 1ul : 0);

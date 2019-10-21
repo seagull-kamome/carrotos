@@ -31,6 +31,7 @@
  */
 
 #pragma once
+#include <carrotlib/list.h>
 #include <carrotlib/time.h>
 #include <carrotlib/compiler.h>
 
@@ -74,7 +75,7 @@ __nonnull((1)) void carrot_clock_get_system_time(struct carrot_timespec *ts);
  *
  *   - No reentrant.
  */
-void carot_clock_give_tick(struct carrot_timespec const* ts);
+void carrot_clock_give_tick(struct carrot_timespec const* ts);
 
 
 /* ************************************************************************ */

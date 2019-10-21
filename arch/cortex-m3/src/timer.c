@@ -26,7 +26,6 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-#pragma once
 #include <assert.h>
 #include <carrotlib/config.h>
 #include <carrotlib/time.h>
@@ -39,7 +38,7 @@
 /* ************************************************************************ */
 
 #if !defined(CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ)
-#  error "No CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ defined."
+#  error "No CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ defined."
 #endif
 #if !defined(CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC)
 #  error "No CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC defined."
@@ -55,18 +54,23 @@ struct tick2ts {
   uint32_t remains;
 };
 
-static inline __pure struct tick2ts tick_to_ts(uint32_t n) {
-  struct tick2ts tt;
-  tt.ts.tv_sec = n / CARROT_ARMCM3_SYSTICK_INFREQ_HZ;
-  n %= CARROT_ARMCM3_SYSTICK_INFREQ_HZ;
+static inline __pure struct tick2ts tick_to_ts(uint32_t n, uint32_t m) {
 
-  if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 1000000000ul == 0) {
+  struct tick2ts tt;
+  tt.ts.tv_sec = n / CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ;
+  n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ;
+
+  assert(CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ > 0);
+  if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ == 0) {
+    CARROT_CONFIG_FATAL_ERROR_HANDLER();
+  } else if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 1000000000ul == 0) {
     tt.ts.tv_nsec = n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000000ul);
     n %= CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC / 1000000000ul;
+    n += m;
   } else if (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ % 1000000ul == 0) {
     tt.ts.tv_nsec = n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul) * 1000ul;
     n = n % (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul) * 1000ul
-      + cnxt.remains;
+      + m;
     tt.ts.tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000000ul);
     n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 1000ul;
   } else {
@@ -77,7 +81,7 @@ static inline __pure struct tick2ts tick_to_ts(uint32_t n) {
       tt.ts.tv_nsec *= 10;
       n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10;
     }
-    n += cnxt.remains;
+    n += m;
     tt.ts.tv_nsec += n / (CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10);
     n %= CARROT_CONFIG_ARMCM3_SYSTICK_INFREQ_HZ / 10;
   }
@@ -113,7 +117,7 @@ bool carrot_arch_clock_get_hw_elapsed(struct carrot_timespec *ts) {
     return false; // it should retry.
   }
   assert(n <= cnxt.last_loadval);
-  *ts = tick_to_ts(n).ts;
+  *ts = tick_to_ts(n, cnxt.remains).ts;
   return true;
 }
 
@@ -125,30 +129,30 @@ void carrot_arch_clock_set_hw_alarm(unsigned int delay_us) {
                     / 1000000ul;
 
   int flags = carrot_save_irq();
-  CARROT_ARMCM3_SYSTICK->csr = CARROT_ARMCM3_SYSTICK_CLKSRC? 0x04 : 0ul; // disable in temporary.
+  CARROT_ARMCM3_SYSTICK->csr = CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC? 0x04 : 0ul; // disable in temporary.
   if (cnxt.elapsed || CARROT_ARMCM3_SYSTICK->csr & (1ul << 16)) {
-    CARRT_ARMCM3_SYSTICK->csr = CARROT_ARMCM3_SYSTICK_CLKSRC? 0x05 : 0x01; // start again
+    CARROT_ARMCM3_SYSTICK->csr = CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC? 0x05 : 0x01; // start again
     cnxt.elapsed = true;
     carrot_restore_irq(flags);
     return;
   }
   x -= cnxt.last_loadval - carrot_armcm3_systick_current_value();
-  ARMCM3_SYSTICK->cvr = (uint32_t)min(x, (uint64_t)CARROT_ARMCM3_SYSTICK_MAX_RELOADVAL);
+  CARROT_ARMCM3_SYSTICK->cvr = (uint32_t)__min(x, (uint64_t)CARROT_ARMCM3_SYSTICK_MAX_RELOADVAL);
 
-  CARRT_ARMCM3_SYSTICK->csr = CARROT_ARMCM3_SYSTICK_CLKSRC? 0x05 : 0x01; // start again
+  CARROT_ARMCM3_SYSTICK->csr = CARROT_CONFIG_ARMCM3_SYSTICK_CLKSRC? 0x05 : 0x01; // start again
   carrot_restore_irq(flags);
 }
 
 
 void carrot_armcm3_systick_isr(void) {
   carrot_disable_irq();
-  struct carrot_timespec ts;
-  cnxt.remains = calc_ts(&ts, cnxt.last_loadval);
-  cnxt.last_reloadval = CARROT_ARMCM3_SYSTICK_MAX_READVAL;
+  struct tick2ts tmp = tick_to_ts(cnxt.last_loadval, cnxt.remains);
+  cnxt.remains = tmp.remains;
+  cnxt.last_loadval = CARROT_ARMCM3_SYSTICK_MAX_RELOADVAL;
   cnxt.elapsed = false;
   carrot_enable_irq();
 
-  carrot_clock_give_tick(&ts);
+  carrot_clock_give_tick(&tmp.ts);
 }
 
 

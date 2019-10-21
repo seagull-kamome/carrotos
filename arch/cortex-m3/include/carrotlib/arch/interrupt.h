@@ -34,19 +34,17 @@ CARROT_BEGIN_EXTERN_C // {
 /* ************************************************************************ */
 
 static __forceinline void carrot_arch_enable_irq(void) {
-  asm volatile ("cpsid if"); }
+  __asm__ ("cpsid if"); }
 static __forceinline void carrot_arch_disable_irq(void) {
-  asm volatile ("cpsie if"); }
+  __asm__ ("cpsie if"); }
 
 __nodiscard static __forceinline int carrot_arch_save_irq(void) {
   int x;
-  asm volatile ("mrs %0, primask; cpsid if;"
-      : "=r"(x) : : "memory");
+  __asm__ ("mrs %0, primask; cpsid if;" : "=r"(x) : : "memory");
   return x; }
 
 static __forceinline void carrot_arch_restore_irq(int flags) {
-  asm volatile ("msr primask, %0;"
-      : : "r" (flags) : "memory"); }
+  __asm__ ("msr primask, %0;" : : "r" (flags) : "memory"); }
 
 
 
@@ -57,12 +55,12 @@ static __forceinline void carrot_arch_restore_irq(int flags) {
 
 __nodiscard static __forceinline uint32_t carrot_armcm3_get_basepri(void) {
   uint32_t x;
-  asm volatile("mrs %0, basepri" : "=r"(x));
+  __asm__("mrs %0, basepri" : "=r"(x));
   return x;
 }
 
 static __forceinline void carrot_armcm3_set_basepri(uint32_t x) {
-  asm volatile("msr basepri, %0" : : "r" (x));
+  __asm__("msr basepri, %0" : : "r" (x));
 }
 
 CARROT_END_EXTERN_C // }

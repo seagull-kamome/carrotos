@@ -34,7 +34,7 @@
 #define CARROT_BITOPS_IMPL_BOARD        (102)
 #define CARROT_BITOPS_IMPL_CONFIG       (103)
 
-#if !defifned(CARROT_CONFIG_BITOPS_IMPL)
+#if !defined(CARROT_CONFIG_BITOPS_IMPL)
 #  error "no defined CARROT_CONFIG_BITOPS_IMPL."
 /* ************************************************************************ */
 #elif (CARROT_CONFIG_BITOPS_IMPL == CARROT_BITOPS_IMPL_GENERIC)
@@ -82,8 +82,8 @@ __nodiscard static __forceinline int carrot_bitops_clz64(uint64_t x) { return __
 __nodiscard static __forceinline int carrot_bitops_ctz32(uint32_t x) { return __builtin_ctzl(x); }
 __nodiscard static __forceinline int carrot_bitops_ctz64(uint64_t x) { return __builtin_ctzll(x); }
 
-__nodiscard static __forceinline int carrot_bitops_clrsb32(uint32_t x) { return __builtin_clesbl(x); }
-__nodiscard static __forceinline int carrot_bitops_clrsb64(uint64_t x) { return __builtin_clesbll(x); }
+__nodiscard static __forceinline int carrot_bitops_clrsb32(uint32_t x) { return __builtin_clrsbl(x); }
+__nodiscard static __forceinline int carrot_bitops_clrsb64(uint64_t x) { return __builtin_clrsbll(x); }
 
 __nodiscard static __forceinline int carrot_bitops_popcount32(uint32_t x) { return __builtin_popcountl(x); }
 __nodiscard static __forceinline int carrot_bitops_popcount64(uint64_t x) { return __builtin_popcountll(x); }

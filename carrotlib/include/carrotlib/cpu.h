@@ -38,24 +38,32 @@
 #if !defined(CARROT_CONFIG_CPU_IMPL)
 #  error "no defined CARROT_CONFIG_CPU_IMPL."
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_ARCH)
-#  include <carrot/arch/cpu.h>
+#  include <carrotlib/arch/cpu.h>
+typedef carrot_arch_cpu_id_t  carrot_cpu_id_t;
 #  define carrot_cpu_relax      carrot_arch_cpu_relax
 #  define carrot_cpu_nop        carrot_arch_cpu_nop
+#  define carrot_cpu_halt       carrot_arch_cpu_halt
 #  define carrot_current_cpu_id carrot_arch_current_cpu_id
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_MCU)
-#  include <carrot/mcu/cpu.h>
+#  include <carrotlib/mcu/cpu.h>
+typedef carrot_mcu_cpu_id_t  carrot_cpu_id_t;
 #  define carrot_cpu_relax      carrot_mcu_cpu_relax
 #  define carrot_cpu_nop        carrot_mcu_cpu_nop
+#  define carrot_cpu_halt       carrot_mcu_cpu_halt
 #  define carrot_current_cpu_id carrot_mcu_current_cpu_id
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_BOARD)
-#  include <carrot/board/cpu.h>
+#  include <carrotlib/board/cpu.h>
+typedef carrot_board_cpu_id_t  carrot_cpu_id_t;
 #  define carrot_cpu_relax      carrot_board_cpu_relax
 #  define carrot_cpu_nop        carrot_board_cpu_nop
+#  define carrot_cpu_halt       carrot_board_cpu_halt
 #  define carrot_current_cpu_id carrot_board_current_cpu_id
 #elif (CARROT_CONFIG_CPU_IMPL == CARROT_CPU_IMPL_CONFIG)
-#  include <carrot/config/cpu.h>
+#  include <carrotlib/config/cpu.h>
+typedef carrot_config_cpu_id_t  carrot_cpu_id_t;
 #  define carrot_cpu_relax      carrot_config_cpu_relax
 #  define carrot_cpu_nop        carrot_config_cpu_nop
+#  define carrot_cpu_halt       carrot_config_cpu_halt
 #  define carrot_current_cpu_id carrot_config_current_cpu_id
 #endif
 

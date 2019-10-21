@@ -1,4 +1,8 @@
-/*
+/**
+ * @file
+ * @brief CPU state control.
+ * @section LICENSE
+ *
  * MIT License
  *
  * Copyright (c) 2019 Hattori, Hiroki
@@ -22,18 +26,23 @@
  * SOFTWARE.
  */
 
-/** @file
- *  @brief
- */
 #pragma once
+#include <stdint.h>
+#include <stdbool.h>
 #include <carrotlib/compiler.h>
+
+typedef uint8_t carrot_arch_cpu_id_t;
 
 CARROT_BEGIN_EXTERN_C // {
 
-static __forceinline void carrot_arch_cpu_relax(void) {
-  asm volatile ("wfi;"); }
-static __forceinline void carrot_arch_cpu_nop(void) { asm volatile("nop;"); }
-static __forceinline __pure void carrot_arch_current_cpu_id(void) { return 0; }
+static __forceinline void carrot_arch_cpu_relax(void) { __asm__("wfi;"); }
+static __forceinline void carrot_arch_cpu_nop(void) { __asm__("nop;"); }
+static __forceinline __pure carrot_arch_cpu_id_t carrot_arch_current_cpu_id(void) { return 0; }
+
+static __forceinline void carrot_arch_cpu_halt(void) {
+  __asm__("cpsid;");
+  while (true) { __asm__("wfi;"); }
+}
 
 CARROT_END_EXTERN_C // }
 

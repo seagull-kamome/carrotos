@@ -25,7 +25,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+#include <stdint.h>
 #include <carrotlib/config.h>
+#include <carrotlib/bitops.h>
 
 #if defined(CARROT_CONFIG_BITOPS_IMPL) && \
   (CARROT_CONFIG_BITOPS_IMPL == CARROT_BITOPS_IMPL_GENERIC)
