@@ -1,0 +1,51 @@
+/**
+ * @file
+ * @brief Formatting string.
+ * @section LICENSE
+ *
+ * MIT License
+ *
+ * Copyright (c) 2019 Hattori, Hiroki
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+#pragma once
+
+#include <stdarg.h>
+#include "./compiler.h"
+
+
+extern char const carrtlib_alnum_l[37];
+extern char const carrtlib_alnum_u[37];
+
+__attribute__((format,3,4))
+int carrotlib_vprintf_impl(
+    void (*putc)(char, intptr_t), intptr_t ctxt,
+    char const* fmt, va_list ap);
+
+/* ************************************************************************ */
+
+__nonnull(3)
+int carrotlib_vsnprintf(char *str, size_t size, char const *fmt, va_list ap);
+__nonnull(3) __attribute__((format,3,4))
+int carrotlib_snprintf(char *str, size_t size, char const* fmt, ...);
+
+
+// vim: colorcolumn=80 ts=8 sw=2 cindent expandtab :
